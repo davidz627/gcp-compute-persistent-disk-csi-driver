@@ -275,7 +275,7 @@ func handle() error {
 	// Run the tests using the testDir kubernetes
 	fullK8sBuildBinPath := filepath.Join(testDir, k8sBuildBinDir)
 	if len(*storageClassFile) != 0 {
-		err = runCSITests(pkgDir, fullK8sBuildBinPath, *testFocus, *storageClassFile, *gceZone)
+		err = runCSITests(pkgDir, fullK8sBuildBinPath, *testFocus, *storageClassFile, *gceZone, *deploymentStrat)
 	} else if *migrationTest {
 		err = runMigrationTests(pkgDir, fullK8sBuildBinPath, *testFocus, *gceZone)
 	} else {
@@ -306,8 +306,8 @@ func runMigrationTests(pkgDir, k8sBinDir, testFocus, gceZone string) error {
 	return runTestsWithConfig(k8sBinDir, gceZone, testFocus, "-storage.migratedPlugins=kubernetes.io/gce-pd")
 }
 
-func runCSITests(pkgDir, k8sBinDir, testFocus, storageClassFile, gceZone string) error {
-	testDriverConfigFile, err := generateDriverConfigFile(pkgDir, storageClassFile)
+func runCSITests(pkgDir, k8sBinDir, testFocus, storageClassFile, gceZone, deploymentStrat string) error {
+	testDriverConfigFile, err := generateDriverConfigFile(pkgDir, storageClassFile, deploymentStrat)
 	if err != nil {
 		return err
 	}
